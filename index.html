@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html  ng-app="myApp">
+<head>
+    <title>HW8</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link data-require="bootstrap-css@3.3.7" data-semver="3.3.7" rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css" />
+    <link data-require="bootstrap-css@3.3.7" data-semver="3.3.7" rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />      
+    <link rel="stylesheet" href="cssforindex.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    
+    <script data-require="angular.js@1.3.0-beta.5" data-semver="1.3.0-beta.5" src="https://code.angularjs.org/1.3.0-beta.5/angular.js"></script>
+    <script data-require="angular.js@1.3.0" data-semver="1.3.0" src="https://code.angularjs.org/1.3.0/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="jsforindex.js"></script>  
+    <script src="dirPagination.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+    <script data-require="jquery@*" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script data-require="bootstrap@3.1.1" data-semver="3.1.1" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+</head>   
+    
+<body ng-controller="MyController" heigth=100%>
+<div class="container" style="height:100%; width:100%; margin:0">
+    <div class="row">
+        <div class="col-xs-2">
+            <div id="overall" class="fa fa-bars" style="font-size: 10px; cursor: default; padding:1vh; color: black"></div>
+        </div>
+        <div class="col-xs-10">
+            <a href="http://sunlightfoundation.com/" target="_blank" style="position: relative; left: 30%; width:20vw "><img src='http://cs-server.usc.edu:45678/hw/hw8/images/logo.png' align="middle" width=7% height="7%">
+            </a><span style="position: relative; left: 30%;font-size:1em; font-family: sans-serif; color:black">Congress API</span>
+        </div>
+    </div>
+</div>
+<div id="contain" class="container" style="height:100%;width:100%; padding:0">
+    <div class="row" style="height:100%; margin:0">
+        <div id="myTognav" class="col-xs-2" style="display:block; padding:0;height:100%">
+            <ul class="tognav" style="height:100%;display:block;">
+                <li id="l"><span class="fa fa-user"><span style="font-family:sans-serif">&nbsp;Legislators</span></span></li><br>
+                <li id="b"><span class="fa fa-file"><span style="font-family: sans-serif">&nbsp;Bills</span></span></li><br>
+                <li id="c"><span class="fa fa-sign-in"><span style="font-family:sans-serif">&nbsp;Committees</span></span></li><br>
+                <li id="f"><span class="fa fa-star"><span style="font-family:sans-serif">&nbsp;Favorites</span></span></li>
+            </ul>
+        </div>
+        <div id="block_border" class="col-xs-10" style="background: #F3F3F3; height:100%; padding:0">
+            <div style="background: #F3F3F3; height:100%;">
+                <div style="position:relative;bottom:6vh;left:1%;width:98%">
+
+                    <div id="legislators">
+                        <div class="page-header" style="border-bottom:1px solid #B3B3B3;height:6vh; font-size:25px; font-family: sans-serif">Legislators</div>
+
+                        <div style="position:relative;top:-2vh; width:inherit; height:100%; border-radius: 1vh; box-shadow: 0 0 1vh gray; background: white">
+                            <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false" data-pause="false">
+                                <div class="carousel-inner" role="listbox">
+                                    <div class="item active">
+                                        <ul class="nav nav-tabs">
+                                        <li><a data-toggle="tab" id="bystate">By State</a></li>
+                                        <li><a data-toggle="tab" id="byhouse">House</a></li>
+                                        <li><a data-toggle="tab" id="bysenate">Senate</a></li>
+                                        </ul>
+
+                                        <div  id="byState" style="width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                                <div class="well well-sm" style="height:7vh">
+                                                    <div class="row">
+                                                        <div class="col-xs-8">
+                                                            <div style="position: relative; left:2vw">Legislators By State</div>
+                                                        </div>
+                                                        <div class="col-xs-4" style="display:block">
+                                                          <select ng-model="q.state">
+                                                            <option ng-selected="{{x.name==defaultSelectedVAT}}" ng-repeat="x in states" value="{{x.name}}">{{x.name}}</option>
+                                                          </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                                      <table class="table" style="height:100%">
+                                                          <thead>
+                                                              <tr>
+                                                                  <th>Party</th>
+                                                                  <th>Name</th>
+                                                                  <th>Chameber</th>
+                                                                  <th>District</th>
+                                                                  <th>State</th><th></th>
+                                                              </tr>
+                                                          </thead>
+                                                          <tr pagination-id="bystatePagination"  dir-paginate="lgtor in lgtors | filter:(q.state==='All States'?undifined:q) | orderBy: ['state', 'last_name']|itemsPerPage: pageSize">
+                                                            <td><img width=18vh height=18vh ng-src="{{lgtor.party === 'D' && 'http://cs-server.usc.edu:45678/hw/hw8/images/d.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/r.png'}}")></td>
+                                                            <td>{{lgtor.last_name+", "+lgtor.first_name}}</td>
+                                                            <td><img width=18vh height=18vh ng-src="{{lgtor.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+lgtor.chamber}}</td>
+                                                            <td>{{lgtor.district==null?"N.A":lgtor.district}}</td>
+                                                            <td>{{lgtor.state}}</td>
+                                                            <td><button type="button" class="btn btn-primary btn-sm" ng-click="details(lgtor.bioguide_id);">view detail</button></td>
+                                                          </tr>
+                                                      </table>     
+
+                                                    </div>
+                                                </div>  
+                                                <div style="position:relative;top:-10vh" ng-controller="OtherController">
+                                                  <div class="text-center">
+                                                  <dir-pagination-controls boundary-links="true" pagination-id="bystatePagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                                                  </div>
+                                                </div>
+                                        </div>
+                                        <div  id="byHouse" style="display:none; width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                                <div class="well well-sm" style="height:7vh">
+                                                    <div class="row">
+                                                        <div class="col-xs-8">
+                                                            <div style="position: relative; left:2vw">Legislators By House</div>
+                                                        </div>
+                                                        <div class="col-xs-4" style="display:block">
+                                                            <input ng-model="searchH" id="search" class="form-control" placeholder="Search">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                                      <table class="table" style="height:100%">
+                                                          <thead>
+                                                              <tr>
+                                                                  <th>Party</th>
+                                                                  <th>Name</th>
+                                                                  <th>Chameber</th>
+                                                                  <th>District</th>
+                                                                  <th>State</th><th></th>
+                                                              </tr>
+                                                          </thead>
+                                                          <tr pagination-id="byhousePagination" dir-paginate="lgtor in lgtors | filter:byH |filter:searchH| orderBy: 'last_name'|itemsPerPage: pageSize">
+                                                            <td><img width=18vh height=18vh ng-src="{{lgtor.party === 'D' && 'http://cs-server.usc.edu:45678/hw/hw8/images/d.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/r.png'}}")></td>
+                                                            <td>{{lgtor.last_name+", "+lgtor.first_name}}</td>
+                                                            <td><img width=18vh height=18vh ng-src="{{lgtor.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+lgtor.chamber}}</td>
+                                                            <td>{{lgtor.district==null?"N.A":lgtor.district}}</td>
+                                                            <td>{{lgtor.state}}</td>
+                                                            <td><button type="button" class="btn btn-primary btn-sm" ng-click="details(lgtor.bioguide_id);">view detail</button></td>
+                                                          </tr>
+                                                      </table>     
+
+                                                    </div>
+                                                </div>  
+                                                <div style="position:relative;top:-10vh" ng-controller="OtherController">
+                                                  <div class="text-center">
+                                                  <dir-pagination-controls boundary-links="true" pagination-id="byhousePagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                                                  </div>
+                                                </div>
+                                        </div>
+                                        <div  id="bySenate" style="display:none; width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                                <div class="well well-sm" style="height:7vh">
+                                                    <div class="row">
+                                                        <div class="col-xs-8">
+                                                            <div style="position: relative; left:2vw">Legislators By Senate</div>
+                                                        </div>
+                                                        <div class="col-xs-4" style="display:block">
+                                                            <input ng-model="searchS" id="search" class="form-control" placeholder="Search">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                                      <table class="table" style="height:100%">
+                                                          <thead>
+                                                              <tr>
+                                                                  <th>Party</th>
+                                                                  <th>Name</th>
+                                                                  <th>Chameber</th>
+                                                                  <th>District</th>
+                                                                  <th>State</th><th></th>
+                                                              </tr>
+                                                          </thead>
+                                                          <tr pagination-id="bysenataPagination" dir-paginate="lgtor in lgtors | filter:byS |filter:searchS| orderBy: 'last_name'|itemsPerPage: pageSize">
+                                                            <td><img width=18vh height=18vh ng-src="{{lgtor.party === 'D' && 'http://cs-server.usc.edu:45678/hw/hw8/images/d.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/r.png'}}")></td>
+                                                            <td>{{lgtor.last_name+", "+lgtor.first_name}}</td>
+                                                            <td><img width=18vh height=18vh ng-src="{{lgtor.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+lgtor.chamber}}</td>
+                                                            <td>{{lgtor.district==null?"N.A":lgtor.district}}</td>
+                                                            <td>{{lgtor.state}}</td>
+                                                            <td><button type="button" class="btn btn-primary btn-sm" ng-click="details(lgtor.bioguide_id);">view detail</button></td>
+                                                          </tr>
+                                                      </table>     
+
+                                                    </div>
+                                                </div>  
+                                                <div style="position:relative;top:-10vh" ng-controller="OtherController">
+                                                  <div class="text-center">
+                                                  <dir-pagination-controls boundary-links="true" pagination-id="bysenataPagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                                                  </div>
+                                                </div>
+                                        </div>
+                                    </div>    
+                                    <div class="item">
+                                            <div class="row">
+                                            <div class="col-md-4" style="font-size:20px; font-family: sans-serif; padding:0 0 0.5vh 4vw; border-bottom:1px solid #F3F3F3;">Details</div>
+                                            <div class="col-md-1 col-md-offset-7"><button id="bt" style="position: relative; top:0.7vh; left:1.5vw" type="button" class="btn btn-default btn-xs"><span id="starOfL" class="fa fa-star" style="font-size:20px; color:white; -webkit-text-stroke-width: 0.2px;-webkit-text-stroke-color: gray;"></span></button></div>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <table class="table">
+                                                    <tr>
+                                                    <td style="width:15vw" Rowspan=5 colspan=2><img width="130vw" height="160vh" style="position:relative; left:2.5vw; top:1vh" src="{{'https://theunitedstates.io/images/congress/original/'+legiDetail.bioguide_id+'.jpg'}}"></td>
+                                                    <td style="width:15vw" colspan=2>{{legiDetail.title+". "+legiDetail.last_name+", "+legiDetail.first_name}}</td>
+                                                    </tr>
+                                                    <tr><td colspan=2><a target="_blank" href="{{legiDetail.contact_form==null?'#':legiDetail.contact_form}}">{{legiDetail.oc_email==null?"N.A":legiDetail.oc_email}}</a></td></tr>
+                                                    <tr><td colspan=2>Chamber: {{legiDetail.chamber}}</td></tr>
+                                                    <tr><td colspan=2>Contact: <span style="color:#337AB7">{{legiDetail.phone}}</span></td></tr>
+                                                    <tr><td colspan=2><img width=18vh height=18vh ng-src="{{legiDetail.party === 'R' && 'http://cs-server.usc.edu:45678/hw/hw8/images/r.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/d.png'}}")>{{" "+(legiDetail.party=="R"?"Republic":"Democrat")}}</td></tr>
+                                                    <tr style="display:none"><td id="bid">{{legiDetail.bioguide_id}}</td></tr>
+                                                    <tr>
+                                                        <th>Start Term</th>
+                                                        <td colspan=3 >{{legiDetail.term_start}}</td>
+                                                    </tr>
+                                                     <tr>
+                                                        <th>End Term</th>
+                                                        <td colspan=3 >{{legiDetail.term_end}}</td>
+                                                    </tr>
+                                                     <tr>
+                                                        <th>Term</th>
+                                                        <td colspan=3 > <div class="progress">
+                                                          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="10"
+                                                          aria-valuemin="0" aria-valuemax="100" style="width:{{legiDetail.term}}">
+                                                          {{legiDetail.term}}
+                                                          </div>
+                                                        </div>
+                                                        </td>
+                                                    </tr>
+                                                     <tr>
+                                                        <th>Office</th>
+                                                        <td colspan=3 >{{legiDetail.office}}</td>
+                                                    </tr>
+                                                     <tr>
+                                                        <th>State</th>
+                                                        <td colspan=3 >{{legiDetail.state}}</td>
+                                                    </tr>
+                                                     <tr>
+                                                        <th>Fax</th>
+                                                        <td style="color:#337AB7" colspan=3 >{{legiDetail.fax==null?"N.A":legiDetail.fax}}</td>
+                                                    </tr>
+                                                     <tr>
+                                                        <th>Birthday</th>
+                                                        <td colspan=3 >{{legiDetail.birthday}}</td>
+                                                    </tr>
+                                                     <tr>
+                                                        <th>Social Links</th>
+                                                        <td>
+                                                            <a href="{{'https://twitter.com/'+legiDetail.twitter_id}}"target="_blank"><img height:15vh width="15vh" src="http://cs-server.usc.edu:45678/hw/hw8/images/t.png"></a>
+                                                            <a href="{{'https://www.facebook.com/'+legiDetail.facebook_id}}"target="_blank"><img height:15vh width="15vh" src="http://cs-server.usc.edu:45678/hw/hw8/images/f.png"></a>
+                                                            <a href="{{legiDetail.website}}"target="_blank"><img height:15vh width="15vh" src="http://cs-server.usc.edu:45678/hw/hw8/images/w.png"></a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <h5>committees</h5>
+                                                <table class="table">
+                                                  <thead>
+                                                    <th>Chamber</th>
+                                                    <th style="width:25%">Committee ID</th>
+                                                    <th>Name</th>
+                                                  </thead>
+                                                    <tr ng-repeat="x in legiComDetail">
+                                                        <td>{{x.chamber}}</td>
+                                                        <td>{{x.committee_id}}</td>
+                                                        <td>{{x.name}}</td>
+                                                    </tr>
+                                                </table>
+                                                <h5>Bills</h5>
+                                                <table class="table">
+                                                  <thead>
+                                                    <th>Bill ID</th>
+                                                    <th>Title</th>
+                                                    <th>Chamber</th>
+                                                    <th style="width:17%">Bill Type</th>
+                                                    <th>Congress</th>
+                                                    <th>Link</th>
+                                                  </thead>
+                                                     <tr ng-repeat="x in legiBillDetail">
+                                                        <td>{{x.bill_id}}</td>
+                                                        <td>{{x.official_title}}</td>
+                                                        <td>{{x.chamber}}</td>
+                                                        <td>{{x.bill_type}}</td>
+                                                        <td>{{x.congress}}</td>
+                                                        <td><a href="{{x.last_version.urls.pdf}}" target="_blank">Link</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>                  
+                                    <!-- Left and right controls -->
+                                    <button id="leftcontrol" class="fa fa-chevron-left" style="position:absolute; top:-1vh; border: solid gray 1px; border-radius:3px;margin:2vh; display:none;background:white;width:3vh;height:3vh" href="#myCarousel" role="button" data-slide="prev" ng-click="setleftcontrol()"></button>
+                                    <button id='next' style="display:none" href="#myCarousel" role="button" data-slide="next"></button>
+                               </div>  
+                           </div>
+                        </div>
+
+                    </div>   
+                    <div id="bills" style="display:none">
+                        <div class="page-header" style="background: #F3F3F3;height: 6vh;border-bottom:1px solid #B3B3B3;font-size:25px; font-family: sans-serif">Bills</div>
+
+                        <div id="billinfor" style="position:relative;top:-2vh; width:inherit; height:100%; border-radius: 1vh; box-shadow: 0 0 1vh gray; background: white">
+                            <div id="billCarousel" class="carousel slide" data-ride="carousel" data-interval="false" data-pause="false">
+                                <div class="carousel-inner" role="listbox">
+                                    <div class="item active">
+                                        <ul class="nav nav-tabs">
+                                        <li><a data-toggle="tab" id="activeB">Active Bills</a></li>
+                                        <li><a data-toggle="tab" id="newB">New Bills</a></li>
+                                        </ul>
+
+                                        <div  id="activeBills" style="width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                                <div class="well well-sm" style="height:7vh">
+                                                    <div class="row">
+                                                        <div class="col-xs-8">
+                                                            <div style="position: relative; left:2vw">Active Bills</div>
+                                                        </div>
+                                                        <div class="col-xs-4" style="display:block">
+                                                              <input ng-model="searchA" id="search" class="form-control" placeholder="Search">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                                      <table class="table" style="height:100%">
+                                                          <thead>
+                                                              <tr>
+                                                                  <th>Bill ID</th>
+                                                                  <th>Bill Type</th>
+                                                                  <th>Title</th>
+                                                                  <th>Chamber</th>
+                                                                  <th>Introduced On</th>
+                                                                  <th>Sponsor</th><th></th>
+                                                              </tr>
+                                                          </thead>
+                                                          <tr pagination-id="avticePagination" dir-paginate="bill in blls | filter: {history:byA}| filter:searchA|orderBy:'bill_id'|itemsPerPage: pageSize"><td style="width:10vw">{{bill.bill_id}}</td><td style="width:8vw">{{bill.bill_type.toUpperCase()}}</td><td style="width:18vw">{{bill.official_title}}</td><td style="width:7vw"><img width=18vh height=18vh ng-src="{{bill.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+bill.chamber.substring(0,1).toUpperCase()+bill.chamber.substring(1, bill.chamber.length)}}</td><td style="width:10vw">{{bill.introduced_on}}</td><td style="width:12vw">{{bill.sponsor.title+". "+bill.sponsor.last_name+", "+bill.sponsor.first_name}}</td><td><button type="button" class="btn btn-primary btn-sm" ng-click="billDetails(bill.bill_id);">view detail</button></td></tr>
+                                                      </table>     
+
+                                                    </div>
+                                                </div>  
+                                                <div style="position:relative;top:-10vh" ng-controller="OtherController">
+                                                  <div class="text-center">
+                                                  <dir-pagination-controls boundary-links="true" pagination-id="avticePagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                                                  </div>
+                                                </div>
+                                        </div>
+                                        <div  id="newBills" style="display:none; width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                                <div class="well well-sm" style="height:7vh">
+                                                    <div class="row">
+                                                        <div class="col-xs-8">
+                                                            <div style="position: relative; left:2vw">New Bills</div>
+                                                        </div>
+                                                        <div class="col-xs-4" style="display:block">
+                                                              <input ng-model="searchN" id="search" class="form-control" placeholder="Search">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                                      <table class="table" style="height:100%">
+                                                          <thead>
+                                                              <tr>
+                                                                  <th>Bill ID</th>
+                                                                  <th>Bill Type</th>
+                                                                  <th>Title</th>
+                                                                  <th>Chamber</th>
+                                                                  <th>Introduced On</th>
+                                                                  <th>Sponsor</th><th></th>
+                                                              </tr>
+                                                          </thead>
+                                                          <tr pagination-id="newPagination" dir-paginate="bill in newblls | filter: {history:byN}|filter:searchN| orderBy:'bill_id'|itemsPerPage: pageSize" ><td style="width:10vw">{{bill.bill_id}}</td><td style="width:8vw">{{bill.bill_type.toUpperCase()}}</td><td style="width:18vw">{{bill.official_title}}</td><td style="width:7vw"><img width=18vh height=18vh ng-src="{{bill.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+bill.chamber.substring(0,1).toUpperCase()+bill.chamber.substring(1, bill.chamber.length)}}</td><td style="width:10vw">{{bill.introduced_on}}</td><td style="width:12vw">{{bill.sponsor.title+". "+bill.sponsor.last_name+", "+bill.sponsor.first_name}}</td><td><button type="button" class="btn btn-primary btn-sm" ng-click="billDetails(bill.bill_id);">view detail</button></td></tr>
+                                                      </table>     
+
+                                                    </div>
+                                                </div>  
+                                                <div style="position:relative;top:-10vh" ng-controller="OtherController">
+                                                  <div class="text-center">
+                                                  <dir-pagination-controls boundary-links="true" pagination-id="newPagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                                                  </div>
+                                                </div>
+                                        </div>
+                                    </div>    
+                                    <div class="item">
+                                        <div class="row">
+                                            <div class="col-md-4" style="font-size:20px; font-family: sans-serif; padding:0 0 0.5vh 4vw; border-bottom:1px solid #F3F3F3;">Details</div>
+                                            <div class="col-md-1 col-md-offset-7"><button id="btbill" style="position: relative; top:0.7vh; left:1.5vw" type="button" class="btn btn-default btn-xs"><span id="starOfB" class="fa fa-star" style="font-size:20px; color:white; -webkit-text-stroke-width: 0.2px;-webkit-text-stroke-color: gray;"></span></button></div>
+                                        </div>
+                                        <div class="col-xs-6" margin:0>
+                                            <table style="" class="table"> 
+                                                <tr>
+                                                  <td>Bill ID</td>
+                                                  <td id="bllid">{{billDetail.bill_id}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Title</td>
+                                                  <td>{{billDetail.official_title}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Bill Type</td>
+                                                  <td>{{billDetail.bill_type.toUpperCase()}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Sponsor</td>
+                                                  <td>{{billDetail.sponsor.title+". "+billDetail.sponsor.last_name+", "+billDetail.sponsor.first_name}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Chamber</td>
+                                                  <td>{{billDetail.chamber.substring(0,1).toUpperCase()+billDetail.chamber.substring(1, billDetail.chamber.length)}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Status</td>
+                                                  <td>{{billDetail.history.active==false? "New":"Active"}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Introduced On</td>
+                                                  <td>{{billDetail.introduced_on}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Congress URL</td>
+                                                  <td><a target="_blank" href={{billDetail.urls.congress}}>URL</a></td>
+                                                </tr>
+                                                 <tr>
+                                                  <td>Version Status</td>
+                                                  <td>{{billDetail.last_version.version_name}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>Bill URL</td>
+                                                  <td><a target="_blank" href={{billDetail.last_version.urls.pdf}}>Link</a></td>
+                                                </tr>
+                                        </table>
+                                        </div>
+                                        <div style="width=100%; height:70vh; position:relative; left:-2vw; margin:0" class="col-xs-6">
+                                            <object width=100% height=100%  data={{billDetail.last_version.urls.pdf}}></object>
+                                        </div>
+                                    </div>                  
+                                    <!-- Left and right controls -->
+                                    <button id="billleftcontrol"  class="fa fa-chevron-left" style="float: left;position:absolute;top: -1vh; border: solid gray 1px; border-radius:3px;margin:2vh; display:none;background:white;width:3vh;height:3vh" href="#billCarousel" role="button" data-slide="prev" ng-click="setbillleftcontrol()"></button>
+                                    <button id='billnext' style="display:none" href="#billCarousel" role="button" data-slide="next"></button>
+                               </div>  
+                           </div>
+                        </div>
+
+                    </div> 
+
+                    <div id="committees" style="display:none;">
+                        <div class="page-header" style="background: #F3F3F3; height: 6vh;border-bottom:1px solid #B3B3B3;font-size:25px; font-family: sans-serif">Committees</div>
+
+                        <div id="commitinfor" style="position:relative;top:-2vh; width:inherit; height:100%; border-radius: 1vh; box-shadow: 0 0 1vh gray; background: white">
+                            <ul class="nav nav-tabs">
+                            <li><a data-toggle="tab" id="houseCom">House</a></li>
+                            <li><a data-toggle="tab" id="senateCom">Senate</a></li>
+                            <li><a data-toggle="tab" id="jointCom">Joint</a></li>
+                            </ul>
+
+                            <div  id="houseCommittees" style="width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                    <div class="well well-sm" style="height:7vh">
+                                        <div class="row">
+                                            <div class="col-xs-8">
+                                                <div style="position: relative; left:2vw">House</div>
+                                            </div>
+                                            <div class="col-xs-4" style="display:block">
+                                                  <input ng-model="searchHouse" id="search" class="form-control" placeholder="Search">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                          <table class="table" style="height:100%">
+                                              <thead>
+                                                  <tr>
+                                                      <th></th>
+                                                      <th>Chamber</th>
+                                                      <th>Committee ID</th>
+                                                      <th>Name</th>
+                                                      <th>Parent Committee</th>
+                                                  </tr>
+                                              </thead>
+                                              <tr pagination-id="houseComPagination" dir-paginate="com in commit | filter: byHCom| filter:searchHouse|orderBy:'committee_id'|itemsPerPage: pageSize">
+                                                <td><button ng-click="btComm(com.committee_id)" style="position: relative; top:0.7vh; left:1.5vw" type="button" class="btn btn-default btn-xs"><span id="starOfL" class="fa fa-star" style="font-size:20px; color:white; -webkit-text-stroke-width: 0.5px;-webkit-text-stroke-color: gray;" ng-style="com.hasStar==false?{'color':'white'}:{'color':'#FFFC65'}"></span></button></td>
+                                                <td style="width:4vw"><img width=18vh height=18vh ng-src="{{com.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+com.chamber.substring(0,1).toUpperCase()+com.chamber.substring(1, com.chamber.length)}}</td>
+                                                <td>{{com.committee_id}}</td>
+                                                <td>{{com.name}}</td>
+                                                <td>{{com.parent_committee_id==null?"N.A":com.parent_committee_id}}</td>
+                                              </tr>
+                                          </table>     
+                                        </div>
+                                    </div>  
+                                    <div style="position:relative;top:-10vh" ng-controller="OtherController">
+                                      <div class="text-center">
+                                      <dir-pagination-controls boundary-links="true" pagination-id="houseComPagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                                      </div>
+                                    </div>
+                            </div>
+                            <div  id="senateCommittees" style="display:none; width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                    <div class="well well-sm" style="height:7vh">
+                                        <div class="row">
+                                            <div class="col-xs-8">
+                                                <div style="position: relative; left:2vw">Senate</div>
+                                            </div>
+                                            <div class="col-xs-4" style="display:none">
+                                                  <input ng-model="searchSenate" id="search" class="form-control" placeholder="Search">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                          <table class="table" style="height:100%">
+                                              <thead>
+                                                  <tr>
+                                                      <th></th>
+                                                      <th>Chamber</th>
+                                                      <th>Committee ID</th>
+                                                      <th>Name</th>
+                                                      <th>Parent Committee</th>
+                                                  </tr>
+                                              </thead>
+                                              <tr pagination-id="senateComPagination" dir-paginate="com in commit | filter: bySCom| filter:searchSenate|orderBy:'committee_id'|itemsPerPage: pageSize">
+                                                 <td><button ng-click="btComm(com.committee_id)" style="position: relative; top:0.7vh; left:1.5vw" type="button" class="btn btn-default btn-xs"><span id="starOfL" class="fa fa-star" style="font-size:20px; color:white; -webkit-text-stroke-width: 0.5px;-webkit-text-stroke-color: gray;" ng-style="com.hasStar==false?{'color':'white'}:{'color':'#FFFC65'}"></span></button></td>
+                                                <td style="width:4vw"><img width=18vh height=18vh ng-src="{{com.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+com.chamber.substring(0,1).toUpperCase()+com.chamber.substring(1, com.chamber.length)}}</td>
+                                                <td>{{com.committee_id}}</td>
+                                                <td>{{com.name}}</td>
+                                                <td>{{com.parent_committee_id==null?"N.A":com.parent_committee_id}}</td>
+                                              </tr>
+                                          </table>     
+                                        </div>
+                                    </div>  
+                                    <div style="position:relative;top:-10vh" ng-controller="OtherController">
+                                      <div class="text-center">
+                                      <dir-pagination-controls boundary-links="true" pagination-id="senateComPagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                                      </div>
+                                    </div>
+                            </div>
+                            <div  id="jointCommittees" style="display:none; width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                    <div class="well well-sm" style="height:7vh">
+                                        <div class="row">
+                                            <div class="col-xs-8">
+                                                <div style="position: relative; left:2vw">Joint</div>
+                                            </div>
+                                            <div class="col-xs-4" style="display:none">
+                                                  <input ng-model="jointSenate" id="search" class="form-control" placeholder="Search">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                          <table class="table" style="height:100%">
+                                              <thead>
+                                                  <tr>
+                                                      <th></th>
+                                                      <th>Chamber</th>
+                                                      <th>Committee ID</th>
+                                                      <th>Name</th>
+                                                  </tr>
+                                              </thead>
+                                              <tr pagination-id="jointComPagination" dir-paginate="com in commit | filter: byJCom| filter:searchJoint|orderBy:'committee_id'|itemsPerPage: pageSize">
+                                                <td><button ng-click="btComm(com.committee_id)" style="position: relative; top:0.7vh; left:1.5vw" type="button" class="btn btn-default btn-xs"><span id="starOfL" class="fa fa-star" style="font-size:20px; color:white; -webkit-text-stroke-width: 0.5px;-webkit-text-stroke-color: gray;" ng-style="com.hasStar==false?{'color':'white'}:{'color':'#FFFC65'}"></span></button></td>
+                                                <td style="width:4vw"><img width=18vh height=18vh ng-src="{{com.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+com.chamber.substring(0,1).toUpperCase()+com.chamber.substring(1, com.chamber.length)}}</td>
+                                                <td>{{com.committee_id}}</td>
+                                                <td>{{com.name}}</td>
+                                              </tr>
+                                          </table>     
+                                        </div>
+                                    </div>  
+                                    <div style="position:relative;top:-10vh" ng-controller="OtherController">
+                                      <div class="text-center">
+                                      <dir-pagination-controls boundary-links="true" pagination-id="jointComPagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                                      </div>
+                                    </div>
+                            </div>
+                        </div>
+
+                    </div>  
+
+                    <div id="favorite" style="display:none">
+                        <div class="page-header" style="background: #F3F3F3;height: 6vh;border-bottom:1px solid #B3B3B3;font-size:25px; font-family: sans-serif">Favorites</div>
+
+                        <div style="position:relative;top:-2vh; width:inherit; height:100%; border-radius: 1vh; box-shadow: 0 0 1vh gray; background: white">
+                          <ul class="nav nav-tabs">
+                          <li><a data-toggle="tab" id="legiOn">Legislators</a></li>
+                          <li><a data-toggle="tab" id="billOn">Bills</a></li>
+                          <li><a data-toggle="tab" id="commOn">Committees</a></li>
+                          </ul>
+
+                          <div id="favL" style="width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                  <div class="well well-sm" style="height:7vh">
+                                      <div class="row">
+                                          <div class="col-xs-8">
+                                              <div style="position: relative; left:2vw">Favorite Legislators</div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                        <table class="table" style="height:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Image</th>
+                                                    <th>Party</th>
+                                                    <th>Name</th>
+                                                    <th>Chameber</th>
+                                                    <th>State</th>
+                                                    <th>Email</th><th></th>
+                                                </tr>
+                                            </thead>
+                                            <tr ng-repeat="lgtor in favLegi | orderBy: ['state', 'last_name']">
+                                              <td><button ng-click="trashL(lgtor.bioguide_id)" type="button" class="btn btn-default btn-xs"><span class="fa fa-trash-o"></span></button></td>
+                                              <td><img width=18vh height=18vh ng-src="{{lgtor.party === 'D' && 'http://cs-server.usc.edu:45678/hw/hw8/images/d.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/r.png'}}")></td>
+                                              <td>{{lgtor.last_name+", "+lgtor.first_name}}</td>
+                                              <td><img width=18vh height=18vh ng-src="{{lgtor.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+lgtor.chamber}}</td>
+                                              <td>{{lgtor.state}}</td>
+                                              <td><a target="_blank" href="{{lgtor.contact_form==null?'#':lgtor.contact_form}}">{{lgtor.oc_email==null?"N.A":lgtor.oc_email}}</a></td>
+                                              <td><button type="button" class="btn btn-primary btn-sm" ng-click="turnToLegiDetail(); details(lgtor.bioguide_id)">view detail</button></td>
+                                            </tr>
+                                        </table>     
+
+                                      </div>
+                                  </div>  
+                          </div>
+                          <div id="favB" style="display:none; width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                  <div class="well well-sm" style="height:7vh">
+                                      <div class="row">
+                                          <div class="col-xs-8">
+                                              <div style="position: relative; left:2vw">Favorite Bills</div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                        <table class="table" style="height:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Bill ID</th>
+                                                    <th>Bill Type</th>
+                                                    <th>Title</th>
+                                                    <th>Chamber</th>
+                                                    <th>Introducted On</th>
+                                                    <th>Sponsor</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                                <tr ng-repeat="bill in favBill|orderBy:'bill_id'">
+                                                  <td><button ng-click="trashB(bill.bill_id)" type="button" class="btn btn-default btn-xs"><span class="fa fa-trash-o"></span></button></td>
+                                                  <td style="width:10vw">{{bill.bill_id}}</td><td style="width:8vw">{{bill.bill_type.toUpperCase()}}</td><td style="width:18vw">{{bill.official_title}}</td><td style="width:7vw"><img width=18vh height=18vh ng-src="{{bill.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+bill.chamber.substring(0,1).toUpperCase()+bill.chamber.substring(1, bill.chamber.length)}}</td><td style="width:10vw">{{bill.introduced_on}}</td><td style="width:12vw">{{bill.sponsor.title+". "+bill.sponsor.last_name+", "+bill.sponsor.first_name}}</td><td><button type="button" class="btn btn-primary btn-sm" ng-click="turnToBillDetail();billDetails(bill.bill_id)">view detail</button></td>
+                                                </tr>            
+                                        </table>     
+                                      </div>
+                                  </div>  
+                          </div>
+                          <div id="favC" style="display:none; width:auto; margin:1vw; position: relative; top: -1vh; border-radius: 1vh; box-shadow: 0 0 0.2vh gray;height:100%">
+                                  <div class="well well-sm" style="height:7vh">
+                                      <div class="row">
+                                          <div class="col-xs-8">
+                                              <div style="position: relative; left:2vw">Favorite Committees</div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <div class="panel-body" style="height:100%; position:relative; top:-5vh">
+                                        <table class="table" style="height:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Chamber</th>
+                                                    <th>Committee ID</th>
+                                                    <th>Name</th>
+                                                    <th>Parent Committee</th>
+                                                    <th>Sub Committee</th>
+                                                </tr>
+                                            </thead>
+                                                <tr ng-repeat="comm in favComm|orderBy:'committee_id'">
+                                                  <td><button ng-click="trashC(comm.committee_id)" type="button" class="btn btn-default btn-xs"><span class="fa fa-trash-o"></span></button></td>
+                                                  <td style="width:7vw"><img width=18vh height=18vh ng-src="{{comm.chamber === 'house' && 'http://cs-server.usc.edu:45678/hw/hw8/images/h.png' || 'http://cs-server.usc.edu:45678/hw/hw8/images/s.svg'}}")>{{" "+comm.chamber.substring(0,1).toUpperCase()+comm.chamber.substring(1, comm.chamber.length)}}</td>
+                                                  <td style="width:10vw">{{comm.committee_id}}</td>
+                                                  <td style="width:18vw">{{comm.name}}</td>
+                                                  <td style="width:10vw">{{comm.parent_committe_id}}</td>
+                                                  <td style="width:12vw">{{comm.subcommittee}}</td>
+                                                </tr>            
+                                        </table>     
+                                      </div>
+                                  </div>  
+                          </div>
+
+                        </div>
+                    </div>     
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+</body></html>

@@ -1,0 +1,24 @@
+ul.tognav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #3D3D3D;
+  height: 100%
+}
+ul.tognav li {
+  display: inline-block;
+  color: #C7C7C7;
+  text-align: left;
+  padding: 18px 12px 0;
+  text-decoration: none;
+  transition: 0.3s;
+  font-size: 11px;
+  font-family: sans-serif;
+  cursor: pointer;
+}
+
+table.table tr{
+    font-size: 12px;
+}
+
